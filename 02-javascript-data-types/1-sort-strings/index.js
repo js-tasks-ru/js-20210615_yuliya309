@@ -13,7 +13,7 @@ export function sortStrings(arr, param = 'asc') {
     {
         for(let i = 0; i < newArray.length; i++)
         {
-            let compare = newArray[i].localeCompare(value,["en", "ru"],{caseFirst:"upper"});
+            let compare = newArray[i].localeCompare(value,["ru", "en", ],{caseFirst:"upper"});
             if(param === "asc")
             {
                 if(compare > 0)
