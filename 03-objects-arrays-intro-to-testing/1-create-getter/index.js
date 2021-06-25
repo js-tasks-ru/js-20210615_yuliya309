@@ -5,4 +5,21 @@
  */
 export function createGetter(path) {
 
+    const arrayKey = path.split(".");
+
+    return function(object)
+    {
+        let obj = object;
+        for(let key of arrayKey)
+        {
+            if(key in obj)
+            {
+                    obj = obj[key];
+            }
+            else
+                return;
+        }
+        return obj;
+
+    }
 }
