@@ -4,21 +4,22 @@
  * @returns {function} - function-getter which allow get value from object by set path
  */
 export function createGetter(path) {
+
+    const arrayKey = path.split(".");
+
     return function(object)
     {
-        let arrayKey = path.split(".");
         let obj = object;
         for(let key of arrayKey)
         {
             if(key in obj)
             {
-                if(typeof obj[key] === "object")    
                     obj = obj[key];
-                else    
-                    return obj[key];
             }
+            else
+                return;
         }
-        return obj[arrayKey[arrayKey.length - 1]];
+        return obj;
 
     }
 }

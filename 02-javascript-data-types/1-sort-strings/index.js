@@ -6,57 +6,15 @@
  */
 export function sortStrings(arr, param = 'asc') {
     // Получим первый элемент.
-    let oldArray = arr.slice(0);
-    let newArray = oldArray.splice(0,1);
-
-    for(let value of oldArray)
-    {
-        for(let i = 0; i < newArray.length; i++)
-        {
-            let compare = newArray[i].localeCompare(value,["ru", "en", ],{caseFirst:"upper"});
-            if(param === "asc")
-            {
-                if(compare > 0)
-                {
-                    if(i === 0)
-                    {
-                        newArray.unshift(value);
-                        break;
-                    }
-                    newArray.splice(i,0,value);
-                    break;
-                }
-                if(compare <= 0)
-                {
-                    if( i === newArray.length - 1)
-                    {
-                        newArray.push(value);
-                        break;
-                    }
-                    continue;
-                }
-            }
-            if(param === "desc")
-            {
-                if(compare < 0)
-                {
-                    if(i === 0)
-                    {
-                        newArray.unshift(value);
-                        break;
-                    }
-                    newArray.splice(i,0,value);
-                    break;
-                }
-                if(compare >= 0)
-                if( i === newArray.length - 1)
-                {
-                    newArray.push(value);
-                    break;
-                }
-                continue;
-            }
-        }
+    const newArray = [...arr];
+    const dec = {
+        asc: 1,
+        desc: -1,
     }
-    return newArray;
+    if(!(param in dec))
+        return;
+
+    return newArray.sort((value1, value2) => { 
+        return dec[param] * value1.localeCompare(value2,["ru", "en", ],{caseFirst:"upper"}); 
+    });
 }
