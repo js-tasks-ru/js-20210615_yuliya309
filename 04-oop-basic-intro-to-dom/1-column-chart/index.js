@@ -5,79 +5,75 @@ export default class ColumnChart {
     label;
     value;
     link;
+    formatHeading;
+    chartHeight = 50;
 
     constructor({
         data = [],
         label = '',
         value = 0,
-        link = value => value
-      }
+        link = '',
+        formatHeading = value => value
+      } = {}
     )
     {
-        this.data = [...data];
+        this.data = data;
         this.label = label;
-        this.value = value;
         this.link = link;
+        this.value = value;
+        this.formatHeading = formatHeading;
 
         this.element = document.createElement('div');
-        this.element.style = '--chart-height: 50';
-        this.createInnerAndClass(data.length === 0);
+        this.element.style = `--chart-height: ${this.chartHeight}`;
+        this.element.className = this.getClassToString();
+        this.element.innerHTML = this.getInner();
     }
     
-    createDivsChild()
+    getDivs()
     {
-        // Найдем максимальное значение.
-        const maxValue = this.data.reduce(function (preVal, item) {    
-            return preVal > item ? preVal : item; 
-        });
+        const maxValue = this.data.reduce(function (preVal, item) {
+            return preVal > item ? preVal : item;
+        }, this.data[0]);
+        const res50 = 50 / maxValue;
+        const res100 = 100 / maxValue;
 
-        // Сформируем массив div'ов - столбцов 
         return this.data.map(function (itemValue){
-            return `<div style="--value: ${itemValue * 50 / maxValue}" data-tooltip="${itemValue * 100 / maxValue}"%></div>`;
-        })
+            return `<div style="--value: ${Math.floor(itemValue * res50)}" data-tooltip="${Math.round(itemValue * res100)}%"></div>`;
+        });
+    }
+    getLink()
+    {
+        return this.link ? `<a href="${this.link}" class="column-chart__link">View all</a>` : '';
+    }
+    getClass()
+    {
+        if(this.data.length !== 0)
+            return "column-chart";
+        return ["column-chart","column-chart_loading"];
+    }
+    getClassToString()
+    {
+        if(this.data.length !== 0)
+            return "column-chart";
+        return "column-chart column-chart_loading";
     }
 
-    createInnerAndClass(isNull = true)
+    getInner()
     {
-        let value = this.value;
-        if( typeof link === 'function')
-            value = link(value);
-        
-        if(isNull === true)
-        {
-            // "Скелет"
-            this.element.className = 'column-chart column-chart_loading';
-            this.element.innerHTML = 
-            `<div class="column-chart__title">
-                ${this.label}
-              <a class="column-chart__link" href="#">View all</a>
-            </div>
-            <div class="column-chart__container">
-              <div data-element="header" class="column-chart__header">
-                ${value}
-              </div>
-              <div data-element="body" class="column-chart__chart">
-              </div>
-            </div>`;
-        }
-        else
-        {
-            // Элемент
-            this.element.className = 'column-chart';
-            this.element.innerHTML = 
-            `<div class="column-chart__title">
-                ${this.label}
-                <a href="/sales" class="column-chart__link">View all</a>
+             return `
+            <div class="column-chart__title">
+                Total ${this.label}
+                ${this.getLink()}
             </div>
             <div class="column-chart__container">
                 <div data-element="header" class="column-chart__header">
-                ${value}
+                ${this.formatHeading(this.value)}
                 </div>
                 <div data-element="body" class="column-chart__chart">
-                ${this.createDivsChild().join('')}
+                ${this.getDivs().join('')}
                 </div>
-            </div>`;
-        }
+            </div>
+            `;
     }
 
 
@@ -93,8 +89,19 @@ export default class ColumnChart {
         this.value = value;
         this.link = link;
 
-        // Новое тело элемента.
-        his.createInnerAndClass(data.length === 0);
+        // // Новое тело элемента.
+        this.element.style = `--chart-height: ${this.chartHeight}`;
+        this.element.className = this.getClassToString();
+        this.element.innerHTML = this.getInner();
     }
 
+
+    remove()
+    {
+        this.element.remove();
+    }
+    destroy()
+    {
+        this.remove();
+    }
 }
