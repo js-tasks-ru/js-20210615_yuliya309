@@ -2,11 +2,6 @@ export default class ColumnChart {
 
     element;
     subElements = {};
-    data;
-    label;
-    value;
-    link;
-    formatHeading;
     chartHeight = 50;
 
     constructor({
@@ -24,21 +19,27 @@ export default class ColumnChart {
         this.value = value;
         this.formatHeading = formatHeading;
 
+        createElement();
+    }
+    
+    createElement()
+    {
         this.element = document.createElement('div');
         this.element.style = `--chart-height: ${this.chartHeight}`;
         this.element.className = this.getClassToString();
         this.element.innerHTML = this.getInner();
 
-        this.findSubElement()
+        this.findSubElement();
     }
-    
+
+
     getDivs()
     {
         const maxValue = this.data.reduce(function (preVal, item) {
             return preVal > item ? preVal : item;
         }, this.data[0]);
-        const res50 = 50 / maxValue;
-        const res100 = 100 / maxValue;
+        const res50 = 50 / maxValue;                // Множитель для вычисления размера столбца.
+        const res100 = 100 / maxValue;              // Множитель для вычисления размера от 100%.
 
         return this.data.map(function (itemValue){
             return `<div style="--value: ${Math.floor(itemValue * res50)}" data-tooltip="${Math.round(itemValue * res100)}%"></div>`;
