@@ -1,6 +1,7 @@
 export default class ColumnChart {
 
     element;
+    subElements = {};
     data;
     label;
     value;
@@ -27,6 +28,8 @@ export default class ColumnChart {
         this.element.style = `--chart-height: ${this.chartHeight}`;
         this.element.className = this.getClassToString();
         this.element.innerHTML = this.getInner();
+
+        this.findSubElement()
     }
     
     getDivs()
@@ -76,25 +79,27 @@ export default class ColumnChart {
             `;
     }
 
-
-    update({
-        data= [],
-        label = '',
-        value= 0,
-        link = value => value
-      }) 
+    findSubElement()
     {
-        this.data = data;
-        this.label = label;
-        this.value = value;
-        this.link = link;
+        const subElements = this.element.querySelectorAll('[data-element]');
 
-        // // Новое тело элемента.
-        this.element.style = `--chart-height: ${this.chartHeight}`;
-        this.element.className = this.getClassToString();
-        this.element.innerHTML = this.getInner();
+        for(const subEl of subElements){
+            const nameElement = subEl.dataset.element;
+            this.subElements[nameElement] = subEl;
+        }
     }
 
+    update({
+        data = [],
+        value = ''
+      } = {}) 
+    {
+        this.data = data;
+        this.value = value === '' ? this.value : value;
+
+        this.subElements.body.innerHTML = this.getDivs().join('');
+        this.subElements.header.innerHTML = this.formatHeading(this.value);
+    }
 
     remove()
     {
@@ -103,5 +108,6 @@ export default class ColumnChart {
     destroy()
     {
         this.remove();
+        this.element = null;
     }
 }
