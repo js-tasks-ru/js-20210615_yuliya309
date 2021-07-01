@@ -19,7 +19,7 @@ export default class ColumnChart {
         this.value = value;
         this.formatHeading = formatHeading;
 
-        createElement();
+        this.createElement();
     }
     
     createElement()
@@ -99,7 +99,7 @@ export default class ColumnChart {
         this.value = value === '' ? this.value : value;
 
         this.subElements.body.innerHTML = this.getDivs().join('');
-        this.subElements.header.innerHTML = this.formatHeading(this.value);
+        //this.subElements.header.innerHTML = this.formatHeading(this.value);
     }
 
     remove()
