@@ -149,9 +149,9 @@ export default class SortableTable {
 
   }
       
-
   compareString(value1, value2, orderValue) 
   {
+    // Сортировка для строк.
     const order = {
         asc: 1,
         desc: -1,
@@ -159,11 +159,12 @@ export default class SortableTable {
     if(!(orderValue in order))
         return;
 
-    return order[orderValue] * value1.localeCompare(value2,[ "en", "ru", ],{caseFirst:"upper"}); 
+    return order[orderValue] * value1.localeCompare(value2,[ "ru","en",],{caseFirst:"upper"}); 
   }
 
   compareNumber(value1, value2, orderValue)
   {
+    // Сортировка для чисел.
     const order = {
       asc: 1,
       desc: -1,
@@ -174,7 +175,6 @@ export default class SortableTable {
     return order[orderValue] * (value1 - value2);
   }
 
-  
   remove()
   {
       this.element.remove();
