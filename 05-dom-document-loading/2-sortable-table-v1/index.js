@@ -48,7 +48,7 @@ export default class SortableTable {
     // Метод создает тело subElementHeader.
     return this.headerConfig.map(function (item) {
       return `
-        <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}" ${('sortable_order' in item)? 'data-order="' + item.sortable_order + '"' : ''}>
+        <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}" ${(item.sortable_order)? 'data-order="' + item.sortable_order + '"' : ''}>
           <span>${item.title}</span>
           <span data-element="arrow", class="sortable-table__sort-arrow">
           <span class="sort-arrow"></span>
@@ -64,6 +64,13 @@ export default class SortableTable {
       return;
     const data = this.data.slice(startItem, startItem + size);
     return data.map(this.getRow.bind(this)).join('');
+  }
+  getInnerBodySort(dataSort)
+  {
+    // Метод создает тело subElementBody.
+    if(this.headerConfig.length === 0)
+      return;
+    return dataSort.map(this.getRow.bind(this)).join('');
   }
   
   getRow(item)
@@ -115,6 +122,7 @@ export default class SortableTable {
     // Найдем индекс элемента, который необходимо отсортировать.
     let columnField = -1;
     let compare;
+    let dataSort = [...this.data];
 
     if(this.headerConfig.length === 0)
       return;
@@ -125,8 +133,9 @@ export default class SortableTable {
       if(item.id === fieldValue)
       {
         columnField = item;
-        break;
+        continue;
       }
+      item.sortable_order = null;
     }
     // Проверим, был ли найден столбец.
     if(columnField === -1)
@@ -142,13 +151,13 @@ export default class SortableTable {
       compare = this.compareString;
 
 
-    this.data = this.data.sort(function (item1, item2) {
-      return compare(item1[columnField.id], item2[columnField.id], orderValue)
+      dataSort = dataSort.sort(function (item1, item2) {
+      return compare(item1[fieldValue], item2[fieldValue], orderValue)
     });
 
 
     this.subElements.header.innerHTML = this.getInnerHeader();
-    this.subElements.body.innerHTML = this.getInnerBody(0, this.data.length);
+    this.subElements.body.innerHTML = this.getInnerBodySort(dataSort);
 
   }
       
