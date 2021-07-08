@@ -48,8 +48,11 @@ export default class SortableTable {
     // Метод создает тело subElementHeader.
     return this.headerConfig.map(function (item) {
       return `
-        <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}" data-order="${('sortable_order' in item)? item.sortable_order : 'asc'}">
+        <div class="sortable-table__cell" data-id="${item.id}" data-sortable="${item.sortable}" ${('sortable_order' in item)? 'data-order="' + item.sortable_order + '"' : ''}>
           <span>${item.title}</span>
+          <span data-element="arrow", class="sortable-table__sort-arrow">
+          <span class="sort-arrow"></span>
+          </span>
         </div>`;
     }).join('');
   }
